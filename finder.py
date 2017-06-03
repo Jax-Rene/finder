@@ -5,19 +5,20 @@ import sys
 import xlrd
 
 # excel files path
-table = xlrd.open_workbook('/home/zhuangjy/Documents/work/computer.xlsx').sheets()[0]
+hosts = xlrd.open_workbook('/home/zhuangjy/Documents/work/computer.xlsx').sheets()[0]
+mysqls = xlrd.open_workbook('/home/zhuangjy/Documents/work/computer.xlsx').sheets()[1]
 
 
 def find(ip=None):
-    num = table.nrows
+    num = hosts.nrows
     results = []
     print 'ip\tusername\tpassword\tport'
     for i in range(1, num):
-        if ip is None or str(ip) in table.row_values(i)[0]:
-            row = {'ip': str(table.row_values(i)[0]),
-                   'name': str(table.row_values(i)[3]),
-                   'pass': str(table.row_values(i)[4]),
-                   'port': str(table.row_values(i)[6])}
+        if ip is None or str(ip) in hosts.row_values(i)[0]:
+            row = {'ip': str(hosts.row_values(i)[0]),
+                   'name': str(hosts.row_values(i)[3]),
+                   'pass': str(hosts.row_values(i)[4]),
+                   'port': str(hosts.row_values(i)[6])}
             results.append(row)
     for row in results:
         if row is not None:
@@ -26,17 +27,15 @@ def find(ip=None):
 
 
 def go(ip=None):
-    print ip
-    ip = str(ip)
-    num = table.nrows
+    num = hosts.nrows
     results = []
     password, username, port = None, None, None
     for i in range(1, num):
-        if ip is None or ip in str(table.row_values(i)[0]):
-            results.append(table.row_values(i)[0])
-            username = table.row_values(i)[3]
-            password = str(table.row_values(i)[4])
-            port = str(table.row_values(i)[6])
+        if ip is None or ip in str(hosts.row_values(i)[0]):
+            results.append(hosts.row_values(i)[0])
+            username = hosts.row_values(i)[3]
+            password = str(hosts.row_values(i)[4])
+            port = str(hosts.row_values(i)[6])
     else:
         if len(results) > 1:
             print 'too many ips,please refer a distinct ip.'
@@ -47,10 +46,36 @@ def go(ip=None):
         else:
             password = '%d' % float(password) if password.endswith('.0') else password
             port = '%d' % float(port) if port.endswith('.0') else port
-            print "sshpass -p {password} ssh -p {port} {user}@{ip}".format(port=port, password=password,
+            cmd = "sshpass -p {password} ssh -p {port} {user}@{ip}".format(port=port, password=password,
                                                                            user=username, ip=results[0])
-            os.system("sshpass -p {password} ssh -p {port} {user}@{ip}"
-                      .format(port=port, password=password, user=username, ip=results[0]))
+            print cmd
+            os.system(cmd)
+
+
+def mysql(ip=None):
+    num = mysqls.nrows
+    results = []
+    password, username, port = None, None, None
+    for i in range(1, num):
+        if ip is None or ip in str(mysqls.row_values(i)[0]):
+            results.append(mysqls.row_values(i)[0])
+            username = mysqls.row_values(i)[3]
+            password = str(mysqls.row_values(i)[4])
+            port = str(mysqls.row_values(i)[6])
+    else:
+        if len(results) > 1:
+            print 'too many ips,please refer a distinct ip.'
+            for res in results:
+                print res
+        elif len(results) == 0:
+            print "can't find target."
+        else:
+            password = '%d' % float(password) if password.endswith('.0') else password
+            port = '%d' % float(port) if port.endswith('.0') else port
+            cmd = "mycli -h {ip} -P {port} -u {user} -p {password}".format(port=port, password=password, user=username,
+                                                                           ip=results[0])
+            print cmd
+            os.system(cmd)
 
 
 if __name__ == '__main__':
@@ -63,5 +88,6 @@ if __name__ == '__main__':
         method = sys.argv[1]
         result = {
             'go': lambda x: go(x),
-            'find': lambda x: find(x)
+            'find': lambda x: find(x),
+            'mysql': lambda x: mysql(x)
         }[method](sys.argv[2])

@@ -80,12 +80,8 @@ mysql 127.0.0.1
 ### 安装以及使用
 
 ``` bash
-# 存放脚本的目录
-cd /yourpath
 git clone https://github.com/iamjohnnyzhuang/finder.git
-# 设置别名方便调用
-echo "alias python /yourpath/finder/finder.py finder" >> ~/.bashrc
-
+sudo ln -s $PWD/finder.py /usr/bin/finder
 ```
 
 

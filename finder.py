@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
 
@@ -5,8 +6,8 @@ import sys
 import xlrd
 
 # excel files path
-hosts = xlrd.open_workbook('/home/zhuangjy/Documents/work/computer.xlsx').sheets()[0]
-mysqls = xlrd.open_workbook('/home/zhuangjy/Documents/work/computer.xlsx').sheets()[1]
+hosts = xlrd.open_workbook('/Users/johnny/project/GitHub/finder/computer.xlsx').sheets()[0]
+mysqls = xlrd.open_workbook('/Users/johnny/project/GitHub/finder/computer.xlsx').sheets()[1]
 
 
 def find(ip=None):

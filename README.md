@@ -74,7 +74,10 @@ mysql 127.0.0.1
    ``` bash
    pip install mycli
    ```
-
+5. xlrd (Python 读取excel包)
+``` bash
+pip install xlrd
+```
 
 
 ### 安装以及使用
